@@ -173,7 +173,9 @@ function displayWeatherForecast(data) {
                         <p>Temperature: ${item.main.temp}°C</p>
                         <p>Weather: ${item.weather[0].description}</p>
                          <p>Humidity: ${item.main.humidity}%</p>
-                         <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png" alt="weather icon">
+                         <img src="https://openweathermap.org/img/wn/${
+                           item.weather[0].icon
+                         }@4x.png" alt="weather icon">
                     </div>
                 </div>
             `;
