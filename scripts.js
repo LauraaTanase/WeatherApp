@@ -1,4 +1,3 @@
-
 const apiKey = "f66f02798c6cca6baabb71fe26138d89";
 
 const cityNameInput = document.querySelector(".city-lookup");
@@ -6,6 +5,12 @@ const searchBtn = document.querySelector(".search-btn");
 const locationBtn = document.querySelector(".location-btn");
 const currentWeather = document.querySelector(".current-weather");
 const forecast = document.querySelector(".forecast");
+//TODO AICI INCEPE CODUL DE INVARTIRE A SPINNER ULUI
+const loadingGif = document.getElementById("loading-gif");
+const loadingContainer = document.getElementById("loading-container");
+
+// Ascunde GIF-ul de încărcare inițial
+loadingGif.classList.add("visually-hidden");
 
 searchBtn.addEventListener("click", () => {
   const cityName = cityNameInput.value;
@@ -16,20 +21,61 @@ searchBtn.addEventListener("click", () => {
     alert("Please enter a city name");
   }
 });
+// Adaugă eveniment pentru butonul de căutare
+searchBtn.addEventListener("click", () => {
+  // Afișează GIF-ul de încărcare
+  loadingGif.classList.remove("visually-hidden");
+  fetchWeatherData();
+});
 
-locationBtn.addEventListener("click", () =>{
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat= position.coords.latitude;
-            const lon = position.coords.longitude;
-            fetchCurrentLocationWeather(lat,lon);
-        }, (error) => {
-            console.error("Error gettinf location:" ,error);
-            alert("Error getting location. Please enter a city name manually.");
-        });
-    } else {
-        alert("Geolocation is not supported by this browser. Please enter a city name manually.");
-    }
+// Adaugă eveniment pentru butonul de locație
+locationBtn.addEventListener("click", () => {
+  // Afișează GIF-ul de încărcare
+  loadingGif.classList.remove("visually-hidden");
+  fetchLocationWeather();
+});
+// Funcție pentru a ascunde GIF-ul de încărcare
+function hideLoadingGif() {
+  loadingGif.classList.add("visually-hidden");
+}
+
+// Exemplu de funcție pentru încărcare datelor meteo
+function fetchWeatherData() {
+  // Simulează o cerere de date meteo
+  setTimeout(() => {
+    // După ce datele sunt încărcate, ascunde GIF-ul de încărcare
+    hideLoadingGif();
+  }, 2000); // Exemplu: așteaptă 2 secunde (simulează o cerere reală)
+}
+
+// Exemplu de funcție pentru încărcare datelor meteo bazate pe locație
+function fetchLocationWeather() {
+  // Simulează o cerere de date meteo bazată pe locație
+  setTimeout(() => {
+    // După ce datele sunt încărcate, ascunde GIF-ul de încărcare
+    hideLoadingGif();
+  }, 2000); // Exemplu: așteaptă 2 secunde (simulează o cerere reală)
+}
+//TODO -AICI SE TERMINA CODUL DE ASCUNDERE A SPINNER ULUI
+
+locationBtn.addEventListener("click", () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchCurrentLocationWeather(lat, lon);
+      },
+      (error) => {
+        console.error("Error gettinf location:", error);
+        alert("Error getting location. Please enter a city name manually.");
+      }
+    );
+  } else {
+    alert(
+      "Geolocation is not supported by this browser. Please enter a city name manually."
+    );
+  }
 });
 
 function fetchCurrentWeather(cityName) {
@@ -43,25 +89,26 @@ function fetchCurrentWeather(cityName) {
     })
     .catch((error) => {
       console.error("Error fetching current weather:", error);
-      currentWeather.innerHTML = "<p>Error fetching current weather data. Please try again later.</p>";
+      currentWeather.innerHTML =
+        "<p>Error fetching current weather data. Please try again later.</p>";
     });
 }
 
-
 function fetchCurrentLocationWeather(lat, lon) {
-    fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        displayCurrentWeather(data);
-        fetchUVIndex(lat, lon);
-      })
-      .catch((error) => {
-        console.error("Error fetching current weather for location:", error);
-        currentWeather.innerHTML = "<p>Error fetching current weather data for your location. Please try again later.</p>";
-      });
-  }
+  fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      displayCurrentWeather(data);
+      fetchUVIndex(lat, lon);
+    })
+    .catch((error) => {
+      console.error("Error fetching current weather for location:", error);
+      currentWeather.innerHTML =
+        "<p>Error fetching current weather data for your location. Please try again later.</p>";
+    });
+}
 
 function fetchUVIndex(lat, lon) {
   fetch(
@@ -86,6 +133,7 @@ function displayCurrentWeather(data) {
             <p>Temperature: ${data.main.temp}°C</p>
             <p>Wind: ${data.wind.speed} m/s</p>
             <p>Weather: ${data.weather[0].description}</p>
+            <p>Humidity: ${data.main.humidity}%</p>
             <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png" alt="weather icon">
         </div>
     `;
@@ -107,7 +155,8 @@ function fetchWeatherForecast(cityName) {
     })
     .catch((error) => {
       console.error("Error fetching weather forecast:", error);
-      forecast.innerHTML = "<p>Error fetching weather forecast data. Please try again later.</p>";
+      forecast.innerHTML =
+        "<p>Error fetching weather forecast data. Please try again later.</p>";
     });
 }
 
@@ -118,10 +167,13 @@ function displayWeatherForecast(data) {
       forecast.innerHTML += `
                 <div class="col-md-2 card text-center p-2">
                     <div class="card-body">
-                        <p>Date: ${new Date(item.dt_txt).toLocaleDateString()}</p>
+                        <p>Date: ${new Date(
+                          item.dt_txt
+                        ).toLocaleDateString()}</p>
                         <p>Temperature: ${item.main.temp}°C</p>
                         <p>Weather: ${item.weather[0].description}</p>
-                        <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png" alt="weather icon">
+                         <p>Humidity: ${item.main.humidity}%</p>
+                         <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png" alt="weather icon">
                     </div>
                 </div>
             `;
