@@ -17,6 +17,21 @@ searchBtn.addEventListener("click", () => {
   }
 });
 
+locationBtn.addEventListener("click", () =>{
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat= position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetchCurrentLocationWeather(lat,lon);
+        }, (error) => {
+            console.error("Error gettinf location:" ,error);
+            alert("Error getting location. Please enter a city name manually.");
+        });
+    } else {
+        alert("Geolocation is not supported by this browser. Please enter a city name manually.");
+    }
+});
+
 function fetchCurrentWeather(cityName) {
   fetch(
     `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
@@ -31,6 +46,22 @@ function fetchCurrentWeather(cityName) {
       currentWeather.innerHTML = "<p>Error fetching current weather data. Please try again later.</p>";
     });
 }
+
+
+function fetchCurrentLocationWeather(lat, lon) {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        displayCurrentWeather(data);
+        fetchUVIndex(lat, lon);
+      })
+      .catch((error) => {
+        console.error("Error fetching current weather for location:", error);
+        currentWeather.innerHTML = "<p>Error fetching current weather data for your location. Please try again later.</p>";
+      });
+  }
 
 function fetchUVIndex(lat, lon) {
   fetch(
