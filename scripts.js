@@ -191,7 +191,7 @@ const weatherBackgrounds = {
 };
 
 function displayWeatherForecast(data) {
-  forecast.innerHTML = `<h2>5-Day Weather Forecast for ${data.city.name}</h2>`;
+  forecast.innerHTML = `<h2 style="color: black;">5-Day Weather Forecast for ${data.city.name}</h2>`;
   data.list.forEach((item, index) => {
     if (index % 8 === 0) {
       const weatherCondition = item.weather[0].main;
