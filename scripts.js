@@ -127,6 +127,28 @@ function fetchUVIndex(lat, lon) {
 }
 
 function displayCurrentWeather(data) {
+  let backgroundUrl;
+
+  switch (data.weather[0].main) {
+    case "Clear":
+      backgroundUrl = "assets/clear.jpg";
+      break;
+    case "Clouds":
+      backgroundUrl = "assets/cloudy.jpg";
+      break;
+    case "Rain":
+      backgroundUrl = "assets/rainy.jpg";
+      break;
+    case "Snow":
+      backgroundUrl = "assets/snow.jpg";
+      break;
+    default:
+      backgroundUrl = "assets/default.jpg";
+      break;
+  }
+
+  currentWeather.style.backgroundImage = `url('${backgroundUrl}')`;
+
   currentWeather.innerHTML = `
         <div class="details">
             <h2>Current Weather in ${data.name}</h2>
@@ -160,12 +182,24 @@ function fetchWeatherForecast(cityName) {
     });
 }
 
+const weatherBackgrounds = {
+  Clear: "assets/clear.jpg",
+  Clouds: "assets/cloudy.jpg",
+  Rain: "assets/rainy.jpg",
+  Snow: "assets/snowy.jpg",
+  default: "assets/default-background.jpg",
+};
+
 function displayWeatherForecast(data) {
   forecast.innerHTML = `<h2>5-Day Weather Forecast for ${data.city.name}</h2>`;
   data.list.forEach((item, index) => {
     if (index % 8 === 0) {
+      const weatherCondition = item.weather[0].main;
+      const backgroundUrl =
+        weatherBackgrounds[weatherCondition] || weatherBackgrounds.default;
+
       forecast.innerHTML += `
-                <div class="col-md-2 card text-center p-2">
+                <div class="col-md-2 card text-center p-2" style="background-image: url('${backgroundUrl}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
                     <div class="card-body">
                         <p>Date: ${new Date(
                           item.dt_txt

@@ -1,0 +1,25 @@
+body {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white; /* text color to contrast with the background */
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: url(/assets/default-background.jpg);
+}
+
+.current-weather {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.forecast {
+  color: white; /* pentru a asigura contrastul textului */
+  border: none; /* elimină bordura implicită */
+  border-radius: 10px; /* colțuri rotunjite */
+  overflow: hidden; /* ascunde orice depășire */
+}
